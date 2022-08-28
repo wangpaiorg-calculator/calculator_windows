@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.wangpai.calculator.view.control.ButtonGroup">
     <children>
         <GridPane prefHeight="523.0" prefWidth="425.0" alignment="CENTER" gridLinesVisible="false"

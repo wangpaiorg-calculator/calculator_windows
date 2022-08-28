@@ -11,8 +11,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import lombok.extern.slf4j.Slf4j;
 import org.wangpai.calculator.model.universal.CentralDatabase;
-import org.wangpai.calculator.model.universal.Function;
-import org.wangpai.calculator.model.universal.Multithreading;
+import org.wangpai.commonutil.multithreading.easy.MultithreadingUtil;
 
 /**
  * Scene 的包装类。此类主要是用来完成一些初始化好 Scene 后才能进行的配置
@@ -31,16 +30,13 @@ public class SceneWrapper extends Scene {
 
     private void afterInitScene() {
         // 懒执行
-        Multithreading.execute(new Function() {
-            @Override
-            public void run() {
-                log.info("开始执行方法 afterInitScene()。时间：{}ms", System.currentTimeMillis() - CentralDatabase.START_TIME);
+        MultithreadingUtil.execute(() -> {
+            log.info("开始执行方法 afterInitScene()。时间：{}ms", System.currentTimeMillis() - CentralDatabase.START_TIME);
 
-                TaskAboutBindShortcut bindShortcutTask = new TaskAboutBindShortcut();
-                bindShortcutTask.task();
+            TaskAboutBindShortcut bindShortcutTask = new TaskAboutBindShortcut();
+            bindShortcutTask.task();
 
-                log.info("方法 afterInitScene() 执行结束。时间：{}ms", System.currentTimeMillis() - CentralDatabase.START_TIME);
-            }
+            log.info("方法 afterInitScene() 执行结束。时间：{}ms", System.currentTimeMillis() - CentralDatabase.START_TIME);
         });
     }
 
@@ -121,7 +117,7 @@ public class SceneWrapper extends Scene {
         private void bindShortcut(Button button, KeyCode keyCode, Modifier... modifiers) {
             KeyCombination kc = new KeyCodeCombination(keyCode, modifiers);
             Platform.runLater(() -> {
-                scene.getAccelerators().put(kc, () -> button.getOnAction().handle(null));
+                SceneWrapper.this.scene.getAccelerators().put(kc, () -> button.getOnAction().handle(null));
             });
         }
     }

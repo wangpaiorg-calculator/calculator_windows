@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.wangpai.calculator.controller.TerminalController;
-import org.wangpai.calculator.model.universal.Function;
-import org.wangpai.calculator.model.universal.Multithreading;
+import org.wangpai.commonutil.multithreading.easy.MultithreadingUtil;
 
 /**
  * 关于 JavaFX 的 TextArea 的文本区光标知识介绍：
@@ -258,8 +257,10 @@ public abstract class TextBox implements FxComponent {
     @Deprecated
     public int[] getSelectedCoordinate() {
         var coordinate = this.textArea.getSelection();
-        return new int[]{coordinate.getStart(),
-                coordinate.getEnd()};
+        return new int[]{
+                coordinate.getStart(),
+                coordinate.getEnd()
+        };
     }
 
     /**
@@ -344,29 +345,44 @@ public abstract class TextBox implements FxComponent {
     }
 
     /**
+     * 将滚动条设置在顶部
+     *
+     * @since 2022-9-6
+     */
+    public TextBox setBarAtTheTop() {
+        return this.setBarLocation(0);
+    }
+
+    /**
      * 将滚动条设置在底部
      *
      * @since 2021-8-6
-     * @lastModified 2021-9-26
+     * @lastModified 2022-9-6
      */
     public TextBox setBarAtTheBottom() {
+        return this.setBarLocation(Double.MAX_VALUE);
+    }
+
+    /**
+     * 设置滑条位置
+     *
+     * @since 2022-9-6
+     */
+    public TextBox setBarLocation(double location) {
         var textArea = this.textArea;
         /**
          * 因为 JavaFX 的 Bug，将滑条置底的方法在滑条第一次出现时不会起作用，第二次才会起作用。
          * 因此，将滑条置底的方法用 Platform.runLater 来包装，这样此方法就相当于在第二次才会调用。
          */
-        Multithreading.execute(new Function() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (Exception exception) {
-                    log.error("发生了非自定义异常：", exception);
-                }
-                Platform.runLater(() -> {
-                    textArea.setScrollTop(Double.MAX_VALUE);
-                });
+        MultithreadingUtil.execute(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (Exception exception) {
+                log.error("发生了非自定义异常：", exception);
             }
+            Platform.runLater(() -> {
+                textArea.setScrollTop(location);
+            });
         });
 
         return this;

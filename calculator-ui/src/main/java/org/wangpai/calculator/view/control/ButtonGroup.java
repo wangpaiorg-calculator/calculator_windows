@@ -14,12 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.wangpai.calculator.controller.TerminalController;
 import org.wangpai.calculator.controller.Url;
 import org.wangpai.calculator.model.universal.CentralDatabase;
-import org.wangpai.calculator.model.universal.Function;
-import org.wangpai.calculator.model.universal.Multithreading;
 import org.wangpai.calculator.view.base.FxComponent;
 import org.wangpai.calculator.view.base.SpringLinker;
-import org.wangpai.mathlab.exception.ConflictException;
-import org.wangpai.mathlab.symbol.enumeration.Symbol;
+import org.wangpai.commonutil.multithreading.easy.MultithreadingUtil;
+import org.wangpai.exception.unchecked.LogicalException;
+import org.wangpai.mathlab.advanced.numeric.basic.enumeration.Symbol;
 
 @Slf4j
 public class ButtonGroup implements FxComponent {
@@ -56,26 +55,37 @@ public class ButtonGroup implements FxComponent {
      */
     private final String[][] labels = new String[][]{
             {"❮", "❯", "✅", "☒"},
-            {Symbol.SEVEN.toString(),
+            {
+                    Symbol.SEVEN.toString(),
                     Symbol.EIGHT.toString(),
                     Symbol.NINE.toString(),
-                    Symbol.DIVIDE.toString()},
-            {Symbol.FOUR.toString(),
+                    Symbol.DIVIDE.toString()
+            },
+            {
+                    Symbol.FOUR.toString(),
                     Symbol.FIVE.toString(),
                     Symbol.SIX.toString(),
-                    Symbol.MULTIPLY.toString()},
-            {Symbol.ONE.toString(),
+                    Symbol.MULTIPLY.toString()
+            },
+            {
+                    Symbol.ONE.toString(),
                     Symbol.TWO.toString(),
                     Symbol.THREE.toString(),
-                    Symbol.SUBTRACT.toString()},
-            {Symbol.ZERO.toString(),
+                    Symbol.SUBTRACT.toString()
+            },
+            {
+                    Symbol.ZERO.toString(),
                     Symbol.DOT.toString(),
                     "⟲",
-                    Symbol.ADD.toString()},
-            {Symbol.LEFT_BRACKET.toString(),
+                    Symbol.ADD.toString()
+            },
+            {
+                    Symbol.LEFT_BRACKET.toString(),
                     Symbol.RIGHT_BRACKET.toString(),
                     "⟳",
-                    Symbol.EQUAL.toString()}};
+                    Symbol.EQUAL.toString()
+            }
+    };
 
     /**
      * 此方法源自接口，无法设置为包可见
@@ -97,31 +107,28 @@ public class ButtonGroup implements FxComponent {
         buttonGroup.setButtonsStyle(); // 设置按钮文本、击键颜色等
 
         // 懒执行
-        Multithreading.execute(new Function() {
-            @Override
-            public void run() {
-                // 初始化 controller
-                ButtonGroupLinker.linking(buttonGroup);
+        MultithreadingUtil.execute(() -> {
+            // 初始化 controller
+            ButtonGroupLinker.linking(buttonGroup);
 
-                /**
-                 * 如果方法 setButtonsStyle 还没有完成调用，一直等待直到其调用为止
-                 */
-                while (!ButtonGroup.this.buttonInitIsFinished) {
-                    try {
-                        Thread.sleep(0); // 触发线程调度。防止 CPU 一直执行此循环从而导致死锁
-                    } catch (InterruptedException exception) {
-                        log.error("发生了非自定义异常：", exception, exception);
-                    }
-                    continue;
+            /**
+             * 如果方法 setButtonsStyle 还没有完成调用，一直等待直到其调用为止
+             */
+            while (!ButtonGroup.this.buttonInitIsFinished) {
+                try {
+                    Thread.sleep(0); // 触发线程调度。防止 CPU 一直执行此循环从而导致死锁
+                } catch (InterruptedException exception) {
+                    log.error("发生了非自定义异常：", exception, exception);
                 }
-                Platform.runLater(() -> {
-                    buttonGroup.setPracticalButtons(); // 设置非功能键
-                    buttonGroup.setFunctionButtons(); // 设置功能键
-                    buttonGroup.setConcealedFunctions(); // 设置特殊隐藏功能
-
-                    log.info("ButtonGroup 初始化完成。时间：{}ms", System.currentTimeMillis() - CentralDatabase.START_TIME);
-                });
+                continue;
             }
+            Platform.runLater(() -> {
+                buttonGroup.setPracticalButtons(); // 设置非功能键
+                buttonGroup.setFunctionButtons(); // 设置功能键
+                buttonGroup.setConcealedFunctions(); // 设置特殊隐藏功能
+
+                log.info("ButtonGroup 初始化完成。时间：{}ms", System.currentTimeMillis() - CentralDatabase.START_TIME);
+            });
         });
     }
 
@@ -143,15 +150,15 @@ public class ButtonGroup implements FxComponent {
          */
         var container = CentralDatabase.getContainer();
         String[] keys = {"buttons", "functionButtons", "practicalButton", "concealedFunctions"};
-        Object[] values = {this.buttons, this.functionButtons,
-                this.practicalButton, this.concealedFunctions};
+        Object[] values = {
+                this.buttons, this.functionButtons,
+                this.practicalButton, this.concealedFunctions
+        };
         for (int order = 0; order < keys.length; ++order) {
             if (container.containsKey(keys[order])) {
-                try {
-                    throw new ConflictException("键" + keys[order] + "已存在");
-                } catch (Exception exception) {
-                    log.error("异常：", exception);
-                }
+                var exception = new LogicalException("键" + keys[order] + "已存在");
+                log.error("异常：", exception);
+                throw exception;
             }
             container.put(keys[order], values[order]);
         }
@@ -197,7 +204,7 @@ public class ButtonGroup implements FxComponent {
                     log.error("异常：", exception);
                 }
             });
-        }// for-each
+        } // for-each
     }
 
     /**

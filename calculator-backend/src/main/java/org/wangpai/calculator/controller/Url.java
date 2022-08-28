@@ -1,7 +1,7 @@
 package org.wangpai.calculator.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.wangpai.mathlab.exception.SyntaxException;
+import org.wangpai.exception.unchecked.LogicalException;
 
 /**
  * @since 2021-7-25
@@ -15,11 +15,11 @@ public class Url {
         super();
     }
 
-    public Url(Url url) throws SyntaxException {
+    public Url(Url url) throws LogicalException {
         this(url.underlyingUrl);
     }
 
-    public Url(String url) throws SyntaxException {
+    public Url(String url) throws LogicalException {
         UrlCheck(url);
         this.underlyingUrl = url;
         this.setAllLevelsDirectories();
@@ -33,12 +33,12 @@ public class Url {
     /**
      * 当 URL 为空时返回 false，语法错误时抛出异常，其它情况返回 true
      */
-    protected static boolean UrlCheck(String url) throws SyntaxException {
+    protected static boolean UrlCheck(String url) throws LogicalException {
         if (url == null) {
             return false;
         }
         if (url.toCharArray()[0] != '/') {
-            throw new SyntaxException("异常：URL 有误");
+            throw new LogicalException("异常：URL 有误");
         }
 
         return true;
@@ -47,7 +47,7 @@ public class Url {
     /**
      * 当 URL 为空时返回 false，语法错误时抛出异常，其它情况返回 true
      */
-    protected static boolean UrlCheck(Url url) throws SyntaxException {
+    protected static boolean UrlCheck(Url url) throws LogicalException {
         return Url.UrlCheck(url.underlyingUrl);
     }
 
@@ -64,7 +64,7 @@ public class Url {
         return this.directories.clone();
     }
 
-    public static String[] getAllLevelsDirectories(Url url) throws SyntaxException {
+    public static String[] getAllLevelsDirectories(Url url) throws LogicalException {
         UrlCheck(url);
 
         return url.underlyingUrl.split("/");

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.wangpai.calculator.model.universal.CentralDatabase;
 import org.wangpai.calculator.view.mainface.CalculatorMainFace;
 import org.wangpai.calculator.view.wrapper.SceneWrapper;
+import org.wangpai.commonutil.multithreading.easy.MultithreadingFactory;
 
 /**
  * 此类必须位于一个独立的文件，必须声明为 public 类
@@ -43,12 +44,12 @@ public class CalculatorMainFaceApp extends Application {
          * 且不受 Maven 模块的限制。这于 xxx.class 中 xxx 是哪个模块的哪个类无关
          */
         var imageStream = CalculatorMainFaceApp.class.getClassLoader()
-                .getResourceAsStream("image/calculatorImage.png");
+                .getResourceAsStream("icon/calculatorIcon.png");
         stage.getIcons().add(new Image(imageStream));
         stage.setTitle("王牌计算器");
 
         stage.setOnCloseRequest(event -> {
-            CentralDatabase.multithreadingClosed();
+            MultithreadingFactory.multithreadingClosed();
             Platform.exit();
             log.info("******** UI 界面关闭：{}ms ********", System.currentTimeMillis() - CentralDatabase.START_TIME);
         });

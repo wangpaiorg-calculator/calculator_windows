@@ -1,7 +1,7 @@
 package org.wangpai.calculator.controller;
 
 import org.junit.jupiter.api.Test;
-import org.wangpai.mathlab.exception.SyntaxException;
+import org.wangpai.exception.unchecked.LogicalException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -23,7 +23,7 @@ public class Url_Test {
     /**
      * 因为字段初始化需要抛出异常，所以此构造器不能省略
      */
-    public Url_Test() throws SyntaxException {
+    public Url_Test() throws LogicalException {
         super();
     }
 
@@ -53,7 +53,7 @@ public class Url_Test {
     }
 
     @Test
-    public void test_generateLowerUrl() throws SyntaxException {
+    public void test_generateLowerUrl() throws LogicalException {
         assertEquals(this.lowerUrl, this.url.generateLowerUrl());
     }
 
@@ -64,7 +64,7 @@ public class Url_Test {
     }
 
     @Test
-    public void test_getAllLevelsDirectories_static() throws SyntaxException {
+    public void test_getAllLevelsDirectories_static() throws LogicalException {
         var expected = this.expectedDirectories;
         var actual = Url.getAllLevelsDirectories(this.url);
         var expecedLength = expected.length;

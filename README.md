@@ -2,7 +2,7 @@
 
 * 此代码是作者出于兴趣爱好自己编写的。转载请注明。
 
-* 作者的邮箱：contactwangpai@163.com
+* 作者的邮箱：annothinker@163.com
 
 ---
 
@@ -52,7 +52,7 @@
 
 本项目依赖的其它项目：
 
-* 【M.4.0 起】mathlab-fx_java：[https://github.com/wangpai-calculator/calculator-mathlab-fx_java](https://github.com/wangpai-calculator/calculator-mathlab-fx_java)
+* 【M.4.0 起】mathlab-fx_java：[https://github.com/wangpai-mathlab/mathlab-fx_java](https://github.com/wangpai-mathlab/mathlab-fx_java)
 
 ---
 

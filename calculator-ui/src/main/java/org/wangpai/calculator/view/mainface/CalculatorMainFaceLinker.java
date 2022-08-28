@@ -14,7 +14,6 @@ import org.wangpai.calculator.view.control.ButtonGroupLinker;
 import org.wangpai.calculator.view.input.InputBoxLinker;
 import org.wangpai.calculator.view.output.PromptMsgBoxLinker;
 import org.wangpai.calculator.view.output.ResultBoxLinker;
-import org.wangpai.mathlab.exception.MathlabException;
 
 @Lazy
 @Scope("singleton")
@@ -86,7 +85,7 @@ public class CalculatorMainFaceLinker extends SpringLinker implements MiddleCont
     }
 
     @Override
-    public Object passDown(Url url, Object data, MiddleController upperController) throws MathlabException {
+    public Object passDown(Url url, Object data, MiddleController upperController) {
         Object response = null;
         switch (url.getFirstLevelDirectory()) {
             case "inputBox":
